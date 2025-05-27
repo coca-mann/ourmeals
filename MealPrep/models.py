@@ -43,8 +43,8 @@ class MealComponent(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Componente da Refeição"
-        verbose_name_plural = "Componentes da Refeição"
+        verbose_name = "Mistura"
+        verbose_name_plural = "Misturas"
 
 
 class Ingredient(models.Model):
@@ -133,8 +133,8 @@ class MealPrep(models.Model):
         return f"{self.name} ({self.get_meal_type_display()} - {self.target_date.strftime('%d/%m/%Y')})"
 
     class Meta:
-        verbose_name = "Marmita Planejada"
-        verbose_name_plural = "Marmitas Planejadas"
+        verbose_name = "Marmita"
+        verbose_name_plural = "Marmitas"
         ordering = ['-target_date']
 
 
@@ -181,8 +181,8 @@ class MealPrepComponent(models.Model):
     )
 
     class Meta:
-        verbose_name = "Componente da Marmita"
-        verbose_name_plural = "Componentes das Marmitas"
+        verbose_name = "Montagem da Marmita"
+        verbose_name_plural = "Montagens das Marmitas"
         unique_together = ('meal_prep', 'component', 'user')
 
     def __str__(self):

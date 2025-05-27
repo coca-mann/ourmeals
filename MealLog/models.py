@@ -98,6 +98,10 @@ class PlannedMeal(models.Model):
         Diet,
         on_delete=models.CASCADE
     )
-
+    
+    class Meta:
+        verbose_name = "Refeição Planejada"
+        verbose_name_plural = "Refeições Planejadas"
+    
     def __str__(self):
         return self.name

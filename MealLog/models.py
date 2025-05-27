@@ -92,11 +92,13 @@ class PlannedMeal(models.Model):
     )
     meal_type = models.CharField(
         max_length=20,
-        choices=MealLog.MealType.choices
+        choices=MealLog.MealType.choices,
+        verbose_name='Marmita'
     )
     diet = models.ForeignKey(
         Diet,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Plano alimentar'
     )
     
     class Meta:

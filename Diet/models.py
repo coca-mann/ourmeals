@@ -45,6 +45,8 @@ class Diet(models.Model):
     
     @property
     def status(self):
+        if not self.start_date:
+            return "Pendente"
         today = datetime.date.today()
         if self.start_date > today:
             return "Planejada"

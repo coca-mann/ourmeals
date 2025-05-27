@@ -151,11 +151,13 @@ class MealPrepComponent(models.Model):
 
     meal_prep = models.ForeignKey(
         MealPrep,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Marmita'
     )
     component = models.ForeignKey(
         MealComponent,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Mistura'
     )
     user = models.ForeignKey(
         User,
@@ -181,8 +183,8 @@ class MealPrepComponent(models.Model):
     )
 
     class Meta:
-        verbose_name = "Montagem da Marmita"
-        verbose_name_plural = "Montagens das Marmitas"
+        verbose_name = "Componente da Marmita"
+        verbose_name_plural = "Componentes das Marmitas"
         unique_together = ('meal_prep', 'component', 'user')
 
     def __str__(self):

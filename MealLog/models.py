@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from multiselectfield import MultiSelectField
+from Diet.models import Diet
 
 class MealLog(models.Model):
     """
@@ -45,7 +46,7 @@ class MealLog(models.Model):
         verbose_name="É sobremesa?"
     )
     diet = models.ForeignKey(
-        'Diet',
+        Diet,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -80,14 +81,23 @@ class PlannedMeal(models.Model):
         (6, 'Domingo'),
     )
 
-    name = models.CharField(max_length=200, verbose_name="Nome do Plano")
+    name = models.CharField(
+        max_length=200,
+        verbose_name="Nome do Plano"
+    )
     days_of_week = MultiSelectField(
         choices=DAYS_OF_WEEK,
         max_choices=7,
         verbose_name="Dias da Semana"
     )
-    meal_type = models.CharField(max_length=20, choices=MealLog.MealType.choices)
-    diet = models.ForeignKey('Diet', on_delete=models.CASCADE)
+    meal_type = models.CharField(
+        max_length=20,
+        choices=MealLog.MealType.choices
+    )
+    diet = models.ForeignKey(
+        Diet,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return self.name

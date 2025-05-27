@@ -74,3 +74,124 @@ class MealPrep(models.Model):
         verbose_name = "Marmita Planejada"
         verbose_name_plural = "Marmitas Planejadas"
         ordering = ['-target_date']
+        
+        
+class MealComponent(models.Model):
+    """
+    Represents a food component (mistura) that can be part of a MealPrep.
+    Ex: Arroz, Frango ao molho, Legumes.
+    """
+    class ComponentType(models.TextChoices):
+        PROTEIN = 'PROTEIN', 'Proteína'
+        CARBOHYDRATE = 'CARBOHYDRATE', 'Carboidrato'
+        VEGETABLE = 'VEGETABLE', 'Vegetal/Legume'
+        SAUCE = 'SAUCE', 'Molho'
+        OTHER = 'OTHER', 'Outro'
+
+    name = models.CharField(
+        max_length=150,
+        verbose_name="Nome do Componente"
+    )
+    component_type = models.CharField(
+        max_length=20,
+        choices=ComponentType.choices,
+        verbose_name="Tipo de Componente"
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name="Modo de Preparo/Descrição"
+    )
+    photo = models.ImageField(
+        upload_to='components/',
+        blank=True,
+        null=True,
+        verbose_name="Foto"
+    )
+    calories_per_serving = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name="Calorias por porção"
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Componente da Refeição"
+        verbose_name_plural = "Componentes da Refeição"
+
+
+class Ingredient(models.Model):
+    """
+    Represents a single ingredient required for a MealComponent.
+    """
+    meal_component = models.ForeignKey(
+        MealComponent,
+        on_delete=models.CASCADE,
+        related_name='ingredients', # Permite acessar os ingredientes a partir de um MealComponent
+        verbose_name="Componente da Refeição"
+    )
+    description = models.CharField(
+        max_length=255,
+        verbose_name="Descrição do Ingrediente",
+        help_text="Ex: 1.5kg de bife de patinho, 2 cebolas grandes"
+    )
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        verbose_name = "Ingrediente"
+        verbose_name_plural = "Ingredientes"
+
+
+class MealPrepComponent(models.Model):
+    """
+    Modelo 'through' que conecta uma MealPrep a um MealComponent,
+    especificando a quantidade, unidade e o usuário para essa porção.
+    """
+    class UnitOfMeasure(models.TextChoices):
+        GRAMS = 'g', 'Gramas'
+        MILLILITERS = 'ml', 'Mililitros'
+        UNIT = 'un', 'Unidade(s)'
+        SPOON = 'colher', 'Colher(es)'
+
+    meal_prep = models.ForeignKey(
+        'MealPrep', # O que era Marmita
+        on_delete=models.CASCADE
+    )
+    component = models.ForeignKey(
+        'MealComponent', # O que era Mistura
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Usuário"
+    )
+    quantity = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name="Quantidade"
+    )
+    unit_of_measure = models.CharField(
+        max_length=10,
+        choices=UnitOfMeasure.choices,
+        default=UnitOfMeasure.GRAMS,
+        verbose_name="Unidade de Medida"
+    )
+    
+    notes = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Observações",
+        help_text="Ex: um pouco mais apimentado, sem sal, etc."
+    )
+
+    class Meta:
+        verbose_name = "Componente da Marmita"
+        verbose_name_plural = "Componentes das Marmitas"
+        unique_together = ('meal_prep', 'component', 'user')
+
+    def __str__(self):
+        return f"{self.quantity}{self.unit_of_measure} de {self.component.name} para {self.user.username}"

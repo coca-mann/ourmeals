@@ -4,3 +4,4 @@ from django.apps import AppConfig
 class MealprepConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'MealPrep'
+    verbose_name = 'Preparo de Marmitas'
